@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="sketchdraw.css">    
+    <script src="js/lz-string.min.js"></script>
+    <script src="https://kit.fontawesome.com/ec1a7ad5db.js" crossorigin="anonymous"></script>
+    <script src="js/sketchdraw.js"></script>
+  </head>
+  <body>
+    <div class="top">
+      <h1>Doodles</h1>
+      <a href="javascript:void(0);" onclick="startDrawing()" id="doodle-button"><i class="fas fa-pen-square"></i> Doodle</a>
+      <a href="javascript:void(0);" onclick="startDrawing()" class="hidden" id="back-button"><i class="fas fa-backward"></i> Back</a>
+    </div>
+    <div id="list">
+      <div id="recent">
+
+      </div>
+      <div id="popular">
+
+      </div>
+    </div>
+    <div id="create" class="hidden">
+      <div class="toolbar">
+        <a id="replay-button" href="javascript:void(0);" title="Replay"><i class="far fa-play-circle"></i></a>
+        <a id="post-button" href="javascript:void(0);" title="Post"><i class="fas fa-file-upload"></i></a>
+      </div>
+      <div class="canvas-container frame">
+        <canvas id="sketch-canvas" width="128" height="72"></canvas>
+      </div>
+      <div class="replies">
+        
+      </div>
+    </div>
+    <script>
+      getGuid();
+      populateRecent();
+      populatePopular();
+      attachDrawingToCanvas(document.getElementById("sketch-canvas"), document.getElementById("replay-button"));
+    </script>
+  </body>
+</html>
