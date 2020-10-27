@@ -1,5 +1,5 @@
-// const apiUrl = "https://pixelapi.gti.nz/";
-const apiUrl = "http://192.168.1.5:8888/";
+const apiUrl = "https://pixelapi.gti.nz/";
+//const apiUrl = "http://192.168.1.5:8888/";
 let guid;
 let currTime = Date.now();
 let recentPosts = [];
