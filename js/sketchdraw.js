@@ -237,11 +237,11 @@ function generateSketchElement(sketch) {
   if (sketch.replies) {
     replies = '<a href="javascript:void(0);" class="replies" onclick="reply(' + sketch.id + ')">' + sketch.replies + (sketch.replies > 1 ? ' replies' : ' reply' ) +  '</a>';
   } else {
-    replies = '<a href="javascript:void(0);" onclick="reply(' + sketch.id + ')">doodle a reply</a>';
+    replies = '<a href="javascript:void(0);" class="replies" onclick="reply(' + sketch.id + ')">doodle a reply</a>';
   }
   let replayButton = '<a href="javascript:void(0)" class="replay" onclick="watchReplay(' + sketch.id + ')"><i class="far fa-play-circle"></i></a>';
 
-  return '<div class="sketch frame"><span class="time" data-time="' + sketch.timestamp + '">' + msToTime(currTime - sketch.timestamp) + ' ago</span><img src="' + sketch.dataUrl + '"/>' + replayButton + replies + '</div>';
+  return '<div class="sketch frame"><span class="time" data-time="' + sketch.timestamp + '">' + msToTime(currTime - sketch.timestamp) + ' ago</span><img src="' + sketch.dataUrl + '" onclick="watchReplay(' + sketch.id + ')"/>' + replayButton + replies + '</div>';
 }
 
 

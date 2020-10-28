@@ -68,7 +68,7 @@ div.top {
   margin: 1em 0.5em 0;
   float: left;
   padding: 0.5em 0;
-  width: calc(50% - 1.4em);
+  width: calc(50% - 1em);
 }
 
 .frame {
@@ -129,6 +129,7 @@ div.top {
 
 .sketch img {
   width:100%;
+  cursor: pointer;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
@@ -204,5 +205,12 @@ div.canvas-container {
 @media screen and (max-width:600px) and (orientation: portrait) {
   div.toolbar, div.canvas-container {
     width: 100%;
+  }
+  .sketch a.replies {
+    width: 100%;
+    text-align: right;
+  }
+  .sketch a.replay {
+    display: none;
   }
 }
