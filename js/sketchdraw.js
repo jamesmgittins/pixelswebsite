@@ -25,7 +25,6 @@ function normalizeVector(vector) {
   var magnitude = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
   vector.x /= magnitude;
   vector.y /= magnitude;
-  console.log(vector);
   return vector;
 }
 
@@ -99,14 +98,12 @@ function attachDrawingToCanvas(canvas, replayButton) {
     let vector = {x:mouseCoords.x - lastPosition.x, y: mouseCoords.y - lastPosition.y};
     let steps = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
     if (steps > 1 && steps < 50) {
-      console.log(steps);
       vector = normalizeVector(vector);
       let x = lastPosition.x;
       let y = lastPosition.y;
       for (var i = 0; i < steps - 1; i++) {
         x += vector.x;
         y += vector.y;
-        console.log('filling ' + x + ' - ' + y);
         if (sketchHistory.filter(s => s.x == Math.round(x) && s.y == Math.round(y)).length == 0) {
           context.beginPath();      
           context.rect(Math.round(x), Math.round(y), 1, 1);
@@ -261,13 +258,7 @@ setInterval(function(){
 
 function putSketchesInList(sketchList, element) {
   for (var i = 0; i < sketchList.length; i++) {
-    (function(){
-      let div = element;
-      let sketch = sketchList[i];
-      setTimeout(function(){
-        div.innerHTML = div.innerHTML + generateSketchElement(sketch);
-      });
-    })();
+    element.innerHTML = element.innerHTML + generateSketchElement(sketchList[i]);
   }
 }
 

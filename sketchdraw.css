@@ -26,6 +26,10 @@ a {
 }
 a:hover {
   text-decoration: underline;
+  color: #FF7700;
+}
+a.big-link {
+  font-size: 1.5em;
 }
 
 #sketch-canvas {
@@ -37,7 +41,11 @@ a:hover {
 }
 
 .hidden {
-  display:none;
+  display:none !important;
+}
+
+.clear { 
+  clear: both;
 }
 
 #list {
@@ -46,7 +54,12 @@ a:hover {
 }
 
 #create {
-  padding-top:1em;
+  padding:1em 0 2em 0;
+  margin:0 -1em;
+  display:flex;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
 }
 
 div#recent, div#popular {
@@ -114,6 +127,9 @@ div.top {
   top: -1em;
   pointer-events: none
 }
+.frame > canvas {
+  margin-bottom: -3px;
+}
 
 .sketch .time {
   font-size: 0.75em;
@@ -148,8 +164,8 @@ div.toolbar, div.canvas-container {
   float:left;
 }
 div.toolbar {
-  width:10%;
   text-align: center;
+  padding: 1em;
 }
 div.toolbar a {
   font-size: 2.5em;
@@ -158,8 +174,9 @@ div.toolbar a {
   display: inline-block;
 }
 div.canvas-container {
-  height:100%;
-  width:80%
+  flex-grow: 5;
+  max-height: 90vh;
+  max-width: 160.02vh;
 }
 
 #replay {
@@ -172,10 +189,21 @@ div.canvas-container {
   text-align: center;
   background-color: rgba(0,0,0,0.5);
 }
+.replay-container {
+  width: 50vw; 
+  height: 28.125vw; /* height:width ratio = 9/16 = .5625  */
+  max-height: 50vh;
+  max-width: 88.9vh; /* 16/9 = 1.778 */
+  margin: auto;
+  position: absolute;
+  top:0;bottom:0; /* vertical center */
+  left:0;right:0; /* horizontal center */
+}
+.replay-container > .frame {
+  margin-top:-0.5em;
+}
 #replay-canvas {
-  width:50%;
-  top: 50%;
-  transform: translateY(-50%);
+  width:100%;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
@@ -196,9 +224,6 @@ div.canvas-container {
   #list {
     width:100%;
   }
-  #replay-canvas {
-    width:75%;
-  }
 }
 @media screen and (max-width: 900px) {
   div#recent,div#popular {
@@ -207,8 +232,14 @@ div.canvas-container {
   body {
     padding:1em 0;
   }
-  #replay-canvas {
-    width: 90%;
+  #create {
+    margin:0;
+  }
+  .replay-container {
+    width: 90vw; 
+    height: 50.625vw; /* height:width ratio = 9/16 = .5625  */
+    max-height: 90vh;
+    max-width: 160.02vh; /* 16/9 = 1.778 */
   }
 }
 @media screen and (max-width:600px) and (orientation: portrait) {
