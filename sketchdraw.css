@@ -158,10 +158,11 @@ div.canvas-container {
   width: 100%;
   z-index: 150;
   text-align: center;
+  background-color: rgba(0,0,0,0.5);
 }
 #replay-canvas {
   width:50%;
-  margin-top:5%;
+  margin-top:15%;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
@@ -182,6 +183,9 @@ div.canvas-container {
   #list {
     width:100%;
   }
+  #replay-canvas {
+    width:75%;
+  }
 }
 @media screen and (max-width: 900px) {
   div#recent,div#popular {
@@ -189,6 +193,9 @@ div.canvas-container {
   }
   body {
     padding:1em 0;
+  }
+  #replay-canvas {
+    width: 90%;
   }
 }
 @media screen and (max-width:600px) and (orientation: portrait) {
