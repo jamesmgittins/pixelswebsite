@@ -224,8 +224,10 @@ function reply(id) {
 
 function postedDrawing() {
   startDrawing();
-  populateRecent();
-  populatePopular();
+  setTimeout(function(){
+    populateRecent();
+    populatePopular();
+  },1000);
 }
 
 
@@ -237,8 +239,9 @@ function generateSketchElement(sketch) {
   } else {
     replies = '<a href="javascript:void(0);" onclick="reply(' + sketch.id + ')">doodle a reply</a>';
   }
+  let replayButton = '<a href="javascript:void(0)" class="replay" onclick="watchReplay(' + sketch.id + ')"><i class="far fa-play-circle"></i></a>';
 
-  return '<div class="sketch frame"><span class="time" data-time="' + sketch.timestamp + '">' + msToTime(currTime - sketch.timestamp) + ' ago</span><img src="' + sketch.dataUrl + '"/>' + replies + '</div>';
+  return '<div class="sketch frame">' + replayButton + '<span class="time" data-time="' + sketch.timestamp + '">' + msToTime(currTime - sketch.timestamp) + ' ago</span><img src="' + sketch.dataUrl + '"/>' + replies + '</div>';
 }
 
 
@@ -287,6 +290,53 @@ function populateRecent() {
       putSketchesInList(recentPosts, recentDiv);
     }
   });
+}
+
+let replayFrameId = false;
+
+function watchReplay(id) {
+  ajaxGet("data/" + id, function(){
+    let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
+    if (Array.isArray(response)) {
+      document.getElementById("replay").classList.toggle("hidden");
+      
+      (function() {
+        let sketchHistory = response;
+
+        if (replayFrameId)
+          cancelAnimationFrame(replayFrameId);
+    
+        let canvas = document.getElementById("replay-canvas");
+        let context = canvas.getContext("2d");
+        context.fillStyle = "#000";
+        replayInProgress = true;
+        let replayCounter = 0;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        let drawHistory = function() {
+          if (replayCounter < sketchHistory.length) {
+            context.beginPath();
+            context.rect(sketchHistory[replayCounter].x, sketchHistory[replayCounter].y, 1, 1);
+            context.fill();
+          } else {
+            replayInProgress = false;
+          }
+          replayCounter++;
+        }
+        let updateReplay = function() {
+          drawHistory();
+          drawHistory();
+          replayFrameId = requestAnimationFrame(updateReplay);
+        }
+        updateReplay();
+      })();
+    }
+  })
+}
+
+function hideReplay() {
+  document.getElementById("replay").classList.toggle("hidden");
+  if (replayFrameId)
+    cancelAnimationFrame(replayFrameId);
 }
 
 

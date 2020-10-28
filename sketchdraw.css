@@ -119,6 +119,10 @@ div.top {
   font-size: 0.75em;
   margin: 0 0.5em;
 }
+.sketch a.replay {
+  font-size: 1.25em;
+  float: left;
+}
 
 .sketch img {
   width:100%;
@@ -144,6 +148,24 @@ div.toolbar a {
 div.canvas-container {
   height:100%;
   width:80%
+}
+
+#replay {
+  position: absolute;
+  top:0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 150;
+  text-align: center;
+}
+#replay-canvas {
+  width:50%;
+  margin-top:25%;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 @media screen and (max-width: 1800px) {
