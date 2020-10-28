@@ -151,7 +151,7 @@ div.canvas-container {
 }
 
 #replay {
-  position: absolute;
+  position: fixed;
   top:0;
   left: 0;
   height: 100%;
@@ -161,7 +161,7 @@ div.canvas-container {
 }
 #replay-canvas {
   width:50%;
-  margin-top:25%;
+  margin-top:5%;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
