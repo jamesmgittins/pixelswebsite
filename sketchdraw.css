@@ -28,9 +28,25 @@ a:hover {
   text-decoration: underline;
   color: #FF7700;
 }
-a.big-link {
+.big-link {
   font-size: 1.5em;
+  margin:1em 1em 0;
+  display: inline-block;
 }
+.big-link:not(.active) > span {
+  display:none;
+}
+.big-link.active > span {
+  color: #EE6600;
+  font-weight: bold;
+}
+.big-link.active > a {
+  display: none;
+}
+.big-link:not(.active) > a {
+  color:#ddc;
+}
+
 
 #sketch-canvas {
   width: 100%;
@@ -48,7 +64,7 @@ a.big-link {
   clear: both;
 }
 
-#list {
+.list {
   width:75%;
   margin:auto;
 }
@@ -62,25 +78,14 @@ a.big-link {
   flex-wrap: wrap-reverse;
 }
 
-div#recent, div#popular {
-  float: left;
-  width: calc(50% - 2em);
+.list-column {
+  width: calc(100% - 2em);
   text-align: center;
   padding: 1em;
 }
-
-div#recent:before {
-  content: "Recent";
-  font-size: 2em;
-  display: block;
+.nav-buttons {
+  text-align: center;
 }
-
-div#popular:before {
-  content: "Popular";
-  font-size: 2em;
-  display: block;
-}
-
 div.top { 
   text-align: center;
 }
@@ -89,7 +94,7 @@ div.top {
   margin: 1em 0.5em 0;
   float: left;
   padding: 0.5em 0;
-  width: calc(50% - 1em);
+  width: calc(25% - 1em);
 }
 
 .frame {
@@ -175,8 +180,8 @@ div.toolbar a {
 }
 div.canvas-container {
   flex-grow: 5;
-  max-height: 90vh;
-  max-width: 160.02vh;
+  max-height: 60vh;
+  max-width: 106.67vh;
 }
 
 #replay {
@@ -211,24 +216,29 @@ div.canvas-container {
 }
 
 @media screen and (max-width: 1800px) {
-  #list {
+  .list {
     width:80%;
   }
 }
 @media screen and (max-width: 1600px) {
-  #list {
+  .list {
     width:90%;
   }
 }
 @media screen and (max-width: 1400px) {
-  #list {
+  .list {
     width:100%;
+  }
+  .sketch {
+    width: calc(33.3% - 1em);
+  }
+  div.canvas-container {
+    flex-grow: 5;
+    max-height: 90vh;
+    max-width: 160.02vh;
   }
 }
 @media screen and (max-width: 900px) {
-  div#recent,div#popular {
-    width: calc(100% - 2em);
-  }
   body {
     padding:1em 0;
   }
@@ -240,6 +250,12 @@ div.canvas-container {
     height: 50.625vw; /* height:width ratio = 9/16 = .5625  */
     max-height: 90vh;
     max-width: 160.02vh; /* 16/9 = 1.778 */
+  }
+  .sketch {
+    margin: 1em 0.5em 0;
+    float: left;
+    padding: 0.5em 0;
+    width: calc(50% - 1em);
   }
 }
 @media screen and (max-width:600px) and (orientation: portrait) {

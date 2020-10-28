@@ -4,6 +4,7 @@ let guid;
 let currTime = Date.now();
 let recentPosts = [];
 let popularPosts = [];
+let replies = [];
 let replyId = false;
 
 function msToTime(duration) {
@@ -68,7 +69,12 @@ function attachDrawingToCanvas(canvas, replayButton) {
 
   let updateCursor = function() {
     context.beginPath();
-    context.fillStyle = "#CCC";
+    if (sketchHistory.filter(s => s.x == mouseCoords.x && s.y == mouseCoords.y).length == 0) {
+      context.fillStyle = "#CCC";  
+    } else {
+      context.fillStyle = "#555";
+    }
+    
     context.rect(mouseCoords.x, mouseCoords.y, 1, 1);
     context.fill();
   };
@@ -211,12 +217,56 @@ function attachDrawingToCanvas(canvas, replayButton) {
   });
 }
 
+function hidePanels() {
+  document.getElementById("list-panel").classList.add("hidden");
+  document.getElementById("replies").classList.add("hidden");
+  document.getElementById("recent").classList.add("hidden");
+  document.getElementById("popular").classList.add("hidden");
+  document.getElementById("create").classList.add("hidden");
+  document.getElementById("doodle-button").classList.add("hidden");
+  document.getElementById("back-button").classList.add("hidden");
+  document.getElementById("reply-button").classList.add("hidden");
+  document.getElementById("recent-button").classList.remove("active");
+  document.getElementById("popular-button").classList.remove("active");
+}
+
 function startDrawing() {
   replyId = false;
-  document.getElementById("list").classList.toggle("hidden");
-  document.getElementById("create").classList.toggle("hidden");
-  document.getElementById("doodle-button").classList.toggle("hidden");
-  document.getElementById("back-button").classList.toggle("hidden");
+  hidePanels();
+  document.getElementById("create").classList.remove("hidden");
+  document.getElementById("back-button").classList.remove("hidden");
+}
+
+function backButton() {
+  if (replyId)
+    showReplies();
+  else
+    showRecent();
+}
+
+function showReplies() {
+  hidePanels();
+  document.getElementById("list-panel").classList.remove("hidden");
+  document.getElementById("replies").classList.remove("hidden");
+  document.getElementById("reply-button").classList.remove("hidden");
+}
+
+function showPopular() {
+  populatePopular();
+  hidePanels();
+  document.getElementById("list-panel").classList.remove("hidden");
+  document.getElementById("popular").classList.remove("hidden");
+  document.getElementById("doodle-button").classList.remove("hidden");
+  document.getElementById("popular-button").classList.add("active");
+}
+
+function showRecent() {
+  populateRecent();
+  hidePanels();
+  document.getElementById("list-panel").classList.remove("hidden");
+  document.getElementById("recent").classList.remove("hidden");
+  document.getElementById("doodle-button").classList.remove("hidden");
+  document.getElementById("recent-button").classList.add("active");
 }
 
 function reply(id) {
@@ -225,25 +275,31 @@ function reply(id) {
 }
 
 function postedDrawing() {
-  startDrawing();
-  setTimeout(function(){
-    populateRecent();
-    populatePopular();
-  },1000);
+  if (replyId) {
+    showReplies();
+    setTimeout(function(){
+      viewReplies(replyId)
+    },1000);
+  } else {
+    showRecent();
+    setTimeout(function(){
+      populateRecent();
+    },1000);
+  }
 }
 
 
-function generateSketchElement(sketch) {
+function generateSketchElement(sketch, showReplyLink = true) {
   let replies = "";
 
-  if (sketch.replies) {
-    replies = '<a href="javascript:void(0);" class="replies" onclick="reply(' + sketch.id + ')">' + sketch.replies + (sketch.replies > 1 ? ' replies' : ' reply' ) +  '</a>';
-  } else {
-    replies = '<a href="javascript:void(0);" class="replies" onclick="reply(' + sketch.id + ')">doodle a reply</a>';
-  }
-  let replayButton = '<a href="javascript:void(0)" class="replay" onclick="watchReplay(' + sketch.id + ')"><i class="far fa-play-circle"></i></a>';
+  if (showReplyLink)
+    if (sketch.replies) {
+      replies = '<a href="javascript:void(0);" class="replies" onclick="viewReplies(' + sketch.id + ')">' + sketch.replies + (sketch.replies > 1 ? ' replies' : ' reply' ) +  '</a>';
+    } else {
+      replies = '<a href="javascript:void(0);" class="replies" onclick="reply(' + sketch.id + ')">doodle a reply</a>';
+    }
 
-  return '<div class="sketch frame"><span class="time" data-time="' + sketch.timestamp + '">' + msToTime(currTime - sketch.timestamp) + ' ago</span><img src="' + sketch.dataUrl + '" onclick="watchReplay(' + sketch.id + ')"/>' + replayButton + replies + '</div>';
+  return '<div class="sketch frame"><span class="time" data-time="' + sketch.timestamp + '">' + msToTime(currTime - sketch.timestamp) + ' ago</span><img src="' + sketch.dataUrl + '" onclick="watchReplay(' + sketch.id + ')"/>' + replies + '</div>';
 }
 
 
@@ -254,36 +310,43 @@ setInterval(function(){
     let stamp = times[i].attributes.getNamedItem('data-time').value;
     times[i].innerHTML = msToTime(currTime - stamp) + ' ago';
   }
-}, 1000);
+}, 5000);
 
-function putSketchesInList(sketchList, element) {
+function putSketchesInList(sketchList, element, showReplyLink = true) {
   for (var i = 0; i < sketchList.length; i++) {
-    element.innerHTML = element.innerHTML + generateSketchElement(sketchList[i]);
+    element.innerHTML = element.innerHTML + generateSketchElement(sketchList[i], showReplyLink);
   }
+  element.innerHTML = element.innerHTML + '<div class="clear"></div>';
 }
 
 function populatePopular() {
   ajaxGet("popular", function(){
-    let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
-    if (Array.isArray(response)) {
-      popularPosts = response;
-      let popularDiv = document.getElementById("popular");
-      popularDiv.innerHTML = '';
-      currTime = Date.now();
-      putSketchesInList(popularPosts, popularDiv);
+    let data = LZString.decompressFromBase64(this.responseText);
+    if (data) {
+      let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
+      if (Array.isArray(response)) {
+        popularPosts = response;
+        let popularDiv = document.getElementById("popular");
+        popularDiv.innerHTML = '';
+        currTime = Date.now();
+        putSketchesInList(popularPosts, popularDiv);
+      }
     }
   });
 }
 
 function populateRecent() {
   ajaxGet("recent", function(){
-    let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
-    if (Array.isArray(response)) {
-      recentPosts = response;
-      let recentDiv = document.getElementById("recent");
-      recentDiv.innerHTML = '';
-      currTime = Date.now();
-      putSketchesInList(recentPosts, recentDiv);
+    let data = LZString.decompressFromBase64(this.responseText);
+    if (data) {
+      let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
+      if (Array.isArray(response)) {
+        recentPosts = response;
+        let recentDiv = document.getElementById("recent");
+        recentDiv.innerHTML = '';
+        currTime = Date.now();
+        putSketchesInList(recentPosts, recentDiv);
+      }
     }
   });
 }
@@ -339,6 +402,17 @@ function hideReplay() {
 }
 
 
-function viewReplies() {
-
+function viewReplies(id) {
+  replyId = id;
+  showReplies();
+  ajaxGet("replies/" + id, function(){
+    let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
+    if (Array.isArray(response)) {
+      replies = response;
+      let repliesDiv = document.getElementById("replies");
+      repliesDiv.innerHTML = '';
+      currTime = Date.now();
+      putSketchesInList(replies, repliesDiv, false);
+    }
+  });
 }
