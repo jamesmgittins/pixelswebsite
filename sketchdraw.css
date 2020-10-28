@@ -122,6 +122,9 @@ div.top {
 .sketch a.replay {
   font-size: 1.25em;
   float: left;
+  position: absolute;
+  bottom: 0.18em;
+  left: 0;
 }
 
 .sketch img {
