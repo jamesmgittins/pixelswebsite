@@ -1,5 +1,5 @@
 const apiUrl = "https://pixelapi.gti.nz/";
-//const apiUrl = "http://192.168.1.5:8888/";
+// const apiUrl = "http://192.168.1.5:8888/";
 let guid;
 let currTime = Date.now();
 let recentPosts = [];
@@ -207,6 +207,11 @@ function attachDrawingToCanvas(canvas, replayButton) {
       data:LZString.compressToBase64(JSON.stringify(sketchHistory))
     });
   });
+  document.getElementById("trash-button").addEventListener("click", function(){
+    sketchHistory = [];
+    imageData = false;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+  });
 }
 
 function startDrawing() {
@@ -295,11 +300,14 @@ function populateRecent() {
 let replayFrameId = false;
 
 function watchReplay(id) {
+  document.getElementById("replay").classList.toggle("hidden");
+  let canvas = document.getElementById("replay-canvas");
+  let context = canvas.getContext("2d");
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
   ajaxGet("data/" + id, function(){
     let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
-    if (Array.isArray(response)) {
-      document.getElementById("replay").classList.toggle("hidden");
-      
+    if (Array.isArray(response)) {    
       (function() {
         let sketchHistory = response;
 

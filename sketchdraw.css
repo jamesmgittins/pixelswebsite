@@ -9,6 +9,7 @@ html {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: manipulation;
   overscroll-behavior: contain;
 }
 body {
@@ -173,7 +174,8 @@ div.canvas-container {
 }
 #replay-canvas {
   width:50%;
-  margin-top:15%;
+  top: 50%;
+  transform: translateY(-50%);
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
