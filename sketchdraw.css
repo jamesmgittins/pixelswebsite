@@ -3,6 +3,13 @@ html {
   height:100%;
   background: #53529C;
   color:#ddc;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  overscroll-behavior: contain;
 }
 body {
   padding:1em;
