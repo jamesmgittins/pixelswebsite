@@ -22,13 +22,14 @@ function getQueryVariable(variable)
 function msToTime(duration) {
   var seconds = Math.floor((duration / 1000) % 60),
     minutes = Math.floor((duration / (1000 * 60)) % 60),
-    hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+    hours = Math.floor((duration / (1000 * 60 * 60)) % 24),
+    days = Math.floor(duration / (1000 * 60 * 60 * 24));
 
-  hours = (hours < 10) ? "0" + hours : hours;
-  minutes = (minutes < 10) ? "0" + minutes : minutes;
-  seconds = (seconds < 10) ? "0" + seconds : seconds;
+  hours = (hours < 10) ? '0' + hours : hours;
+  minutes = (minutes < 10) ? '0' + minutes : minutes;
+  seconds = (seconds < 10) ? '0' + seconds : seconds;
 
-  return (hours > 0 ? hours + "h " : '') + minutes + "m " + seconds + "s";
+  return (days > 0 ? days + 'd ' : '') + (hours > 0 ? hours + 'h ' : '') + minutes + 'm ' + seconds + 's';
 }
 
 function normalizeVector(vector) {
