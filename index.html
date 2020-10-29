@@ -54,9 +54,26 @@
     </div>
     <script>
       getGuid();
-      showRecent();
-      // populateRecent();
-      // populatePopular();
+      let path = getQueryVariable('path');
+      if (path) {
+        switch (path) {
+          case 'recent':
+            showRecent();
+            break;
+          case 'replies':
+            showReplies();
+            break;
+          case 'popular':
+            showPopular();
+            break;
+          case 'create':
+            startDrawing();
+            break;
+        }
+      } else {
+        showRecent();
+      }
+      setStateManager();
       attachDrawingToCanvas(document.getElementById("sketch-canvas"), document.getElementById("replay-button"));
     </script>
   </body>

@@ -6,6 +6,18 @@ let recentPosts = [];
 let popularPosts = [];
 let replies = [];
 let replyId = false;
+let dataCache = [];
+
+function getQueryVariable(variable)
+{
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+          var pair = vars[i].split("=");
+          if(pair[0] == variable){return pair[1];}
+  }
+  return(false);
+}
 
 function msToTime(duration) {
   var seconds = Math.floor((duration / 1000) % 60),
@@ -179,9 +191,15 @@ function attachDrawingToCanvas(canvas, replayButton) {
     mouseReleased = true;
     updateCanvas();
   });
-  canvas.addEventListener("touchstart", function(){
+  canvas.addEventListener("touchstart", function(event){
     mouseOver = true;
     mouseDown = true;
+    let xFactor = canvas.width / canvas.clientWidth;
+    let yFactor = canvas.height / canvas.clientHeight;
+    let rect = canvas.getBoundingClientRect();
+    mouseCoords.x = Math.round((xFactor * (event.targetTouches[0].clientX  - rect.x)));
+    mouseCoords.y = Math.round((yFactor * (event.targetTouches[0].clientY  - rect.y)));
+    updateCanvas();
   });
   canvas.addEventListener("touchend", function(){
     mouseOver = false;
@@ -230,7 +248,9 @@ function hidePanels() {
   document.getElementById("popular-button").classList.remove("active");
 }
 
-function startDrawing() {
+function startDrawing(addHistory = true) {
+  if (addHistory)
+    history.pushState(null, null, 'create.html');
   replyId = false;
   hidePanels();
   document.getElementById("create").classList.remove("hidden");
@@ -244,14 +264,18 @@ function backButton() {
     showRecent();
 }
 
-function showReplies() {
+function showReplies(addHistory = true) {
+  if (addHistory)
+    history.pushState(null, null, 'replies.html');
   hidePanels();
   document.getElementById("list-panel").classList.remove("hidden");
   document.getElementById("replies").classList.remove("hidden");
   document.getElementById("reply-button").classList.remove("hidden");
 }
 
-function showPopular() {
+function showPopular(addHistory = true) {
+  if (addHistory)
+    history.pushState(null, null, 'popular.html');
   populatePopular();
   hidePanels();
   document.getElementById("list-panel").classList.remove("hidden");
@@ -260,7 +284,9 @@ function showPopular() {
   document.getElementById("popular-button").classList.add("active");
 }
 
-function showRecent() {
+function showRecent(addHistory = true) {
+  if (addHistory)
+    history.pushState(null, null, 'recent.html');
   populateRecent();
   hidePanels();
   document.getElementById("list-panel").classList.remove("hidden");
@@ -359,40 +385,44 @@ function watchReplay(id) {
   let context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
 
-  ajaxGet("data/" + id, function(){
-    let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
-    if (Array.isArray(response)) {    
-      (function() {
-        let sketchHistory = response;
+  let renderHistory = function(sketchHistory) {
+    if (replayFrameId)
+      cancelAnimationFrame(replayFrameId);
 
-        if (replayFrameId)
-          cancelAnimationFrame(replayFrameId);
-    
-        let canvas = document.getElementById("replay-canvas");
-        let context = canvas.getContext("2d");
-        context.fillStyle = "#000";
-        replayInProgress = true;
-        let replayCounter = 0;
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        let drawHistory = function() {
-          if (replayCounter < sketchHistory.length) {
-            context.beginPath();
-            context.rect(sketchHistory[replayCounter].x, sketchHistory[replayCounter].y, 1, 1);
-            context.fill();
-          } else {
-            replayInProgress = false;
-          }
-          replayCounter++;
-        }
-        let updateReplay = function() {
-          drawHistory();
-          drawHistory();
-          replayFrameId = requestAnimationFrame(updateReplay);
-        }
-        updateReplay();
-      })();
+    let canvas = document.getElementById("replay-canvas");
+    let context = canvas.getContext("2d");
+    context.fillStyle = "#000";
+    replayInProgress = true;
+    let replayCounter = 0;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    let drawHistory = function() {
+      if (replayCounter < sketchHistory.length) {
+        context.beginPath();
+        context.rect(sketchHistory[replayCounter].x, sketchHistory[replayCounter].y, 1, 1);
+        context.fill();
+      } else {
+        replayInProgress = false;
+      }
+      replayCounter++;
     }
-  })
+    let updateReplay = function() {
+      drawHistory();
+      drawHistory();
+      replayFrameId = requestAnimationFrame(updateReplay);
+    }
+    updateReplay();
+  }
+  if (dataCache[id]) {
+    renderHistory(JSON.parse(LZString.decompressFromBase64(dataCache[id])))
+  } else {
+    ajaxGet("data/" + id, function(){
+      let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
+      if (Array.isArray(response)) {
+        dataCache[id] = this.responseText;
+        renderHistory(response);
+      }
+    })
+  }
 }
 
 function hideReplay() {
@@ -413,6 +443,28 @@ function viewReplies(id) {
       repliesDiv.innerHTML = '';
       currTime = Date.now();
       putSketchesInList(replies, repliesDiv, false);
+    }
+  });
+}
+
+function setStateManager() {
+  window.addEventListener("popstate", function(e) {
+    let path = location.pathname.substring(location.pathname.lastIndexOf('/') + 1, location.pathname.length);
+    switch (path) {
+      case 'create.html':
+        let id = replyId;
+        startDrawing(false);
+        replyId = id;
+        break;
+      case 'replies.html':
+        showReplies(false);
+        break;
+      case 'recent.html':
+        showRecent(false);
+        break;
+      case 'popular.html':
+        showPopular(false);
+        break;
     }
   });
 }

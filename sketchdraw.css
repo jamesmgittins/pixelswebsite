@@ -30,21 +30,22 @@ a:hover {
 }
 .big-link {
   font-size: 1.5em;
-  margin:1em 1em 0;
+  padding: 0.5em;
   display: inline-block;
+}
+.big-link.active {
+  background-color: #EE6600;
+  
+  border-radius: 0.5em;
 }
 .big-link:not(.active) > span {
   display:none;
 }
 .big-link.active > span {
-  color: #EE6600;
   font-weight: bold;
 }
 .big-link.active > a {
   display: none;
-}
-.big-link:not(.active) > a {
-  color:#ddc;
 }
 
 
@@ -145,7 +146,7 @@ div.top {
 }
 
 .sketch a {
-  font-size: 0.75em;
+  font-size: 0.8em;
   margin: 0 0.5em;
 }
 .sketch a.replay {
