@@ -1,0 +1,21 @@
+{
+  "short_name": "Doodles",
+  "name": "Doodles",
+  "icons": [
+    {
+      "src": "/images/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "https://doodles.gti.nz",
+  "background_color": "#53529C",
+  "display": "fullscreen",
+  "scope": "https://doodles.gti.nz",
+  "theme_color": "#53529C"
+}
