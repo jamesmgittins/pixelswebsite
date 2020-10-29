@@ -4,7 +4,7 @@
     <body>
         <script>
             window.location.replace(
-                window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) +
+                (window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) || '/') +
                 '?path=popular');
         </script>
     </body>
