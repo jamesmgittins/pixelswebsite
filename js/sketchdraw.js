@@ -270,7 +270,7 @@ function startDrawing(addHistory = true) {
 
 function backButton() {
   if (getReplyId())
-    showReplies();
+    viewReplies(getReplyId());
   else
     showRecent();
 }
