@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="sketchdraw.css">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <script src="js/lz-string.min.js"></script>
     <script src="https://kit.fontawesome.com/ec1a7ad5db.js" crossorigin="anonymous"></script>
     <script src="js/sketchdraw.js"></script>
@@ -13,7 +13,7 @@
       <h1>Doodles</h1>
       <a href="javascript:void(0);" onclick="startDrawing()" id="doodle-button" class="big-link"><i class="fas fa-pen-square"></i> Create Doodle</a>
       <a href="javascript:void(0);" onclick="backButton()" class="hidden big-link" id="back-button"><i class="fas fa-backward"></i> Back</a>
-      <a href="javascript:void(0);" onclick="reply(replyId)" class="hidden big-link" id="reply-button"><i class="fas fa-pen-square"></i> Reply</a>
+      <a href="javascript:void(0);" onclick="reply(getReplyId())" class="hidden big-link" id="reply-button"><i class="fas fa-pen-square"></i> Reply</a>
     </div>
     <div id="list-panel" class="list">
       <div class="nav-buttons">
@@ -62,7 +62,7 @@
             showRecent();
             break;
           case 'replies':
-            showReplies();
+            viewReplies(getReplyId());
             break;
           case 'popular':
             showPopular();

@@ -1,11 +1,10 @@
 const apiUrl = "https://pixelapi.gti.nz/";
-// const apiUrl = "http://192.168.1.5:8888/";
+//const apiUrl = "http://192.168.1.5:8888/";
 let guid;
 let currTime = Date.now();
 let recentPosts = [];
 let popularPosts = [];
 let replies = [];
-let replyId = false;
 let dataCache = [];
 
 function getQueryVariable(variable)
@@ -30,6 +29,17 @@ function msToTime(duration) {
   seconds = (seconds < 10) ? '0' + seconds : seconds;
 
   return (days > 0 ? days + 'd ' : '') + (hours > 0 ? hours + 'h ' : '') + minutes + 'm ' + seconds + 's';
+}
+
+function getReplyId() {
+  return localStorage.getItem("pixelReplyId");
+}
+
+function setReplyId(id) {
+  if (id)
+    localStorage.setItem("pixelReplyId", id);
+  else
+    localStorage.removeItem("pixelReplyId")
 }
 
 function normalizeVector(vector) {
@@ -225,7 +235,7 @@ function attachDrawingToCanvas(canvas, replayButton) {
       imageData = false;
     },  {
       user:guid,
-      parent:replyId,
+      parent:getReplyId(),
       data:LZString.compressToBase64(JSON.stringify(sketchHistory))
     });
   });
@@ -252,14 +262,14 @@ function hidePanels() {
 function startDrawing(addHistory = true) {
   if (addHistory)
     history.pushState(null, null, 'create.html');
-  replyId = false;
+  setReplyId(false);
   hidePanels();
   document.getElementById("create").classList.remove("hidden");
   document.getElementById("back-button").classList.remove("hidden");
 }
 
 function backButton() {
-  if (replyId)
+  if (getReplyId())
     showReplies();
   else
     showRecent();
@@ -298,14 +308,14 @@ function showRecent(addHistory = true) {
 
 function reply(id) {
   startDrawing();
-  replyId = id;
+  setReplyId(id);
 }
 
 function postedDrawing() {
-  if (replyId) {
+  if (getReplyId()) {
     showReplies();
     setTimeout(function(){
-      viewReplies(replyId)
+      viewReplies(getReplyId())
     },1000);
   } else {
     showRecent();
@@ -350,7 +360,7 @@ function populatePopular() {
   ajaxGet("popular", function(){
     let data = LZString.decompressFromBase64(this.responseText);
     if (data) {
-      let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
+      let response = JSON.parse(data);
       if (Array.isArray(response)) {
         popularPosts = response;
         let popularDiv = document.getElementById("popular");
@@ -366,7 +376,7 @@ function populateRecent() {
   ajaxGet("recent", function(){
     let data = LZString.decompressFromBase64(this.responseText);
     if (data) {
-      let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
+      let response = JSON.parse(data);
       if (Array.isArray(response)) {
         recentPosts = response;
         let recentDiv = document.getElementById("recent");
@@ -434,7 +444,7 @@ function hideReplay() {
 
 
 function viewReplies(id) {
-  replyId = id;
+  setReplyId(id);
   showReplies();
   ajaxGet("replies/" + id, function(){
     let response = JSON.parse(LZString.decompressFromBase64(this.responseText));
@@ -453,9 +463,9 @@ function setStateManager() {
     let path = location.pathname.substring(location.pathname.lastIndexOf('/') + 1, location.pathname.length);
     switch (path) {
       case 'create.html':
-        let id = replyId;
+        let id = getReplyId();
         startDrawing(false);
-        replyId = id;
+        setReplyId(id);
         break;
       case 'replies.html':
         showReplies(false);
