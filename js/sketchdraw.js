@@ -79,6 +79,32 @@ function getGuid() {
   }
 }
 
+function downloadURI(uri, name) {
+  var link = document.createElement("a");
+  link.download = name;
+  link.href = uri;
+  document.body.append(link);
+  link.click();
+  link.remove();
+}
+
+function downloadSketch(id) {
+  let bg = '#eaead9';
+  let width = 128 * 4;
+  let height = 72 * 4;
+  let canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  let context = canvas.getContext('2d');
+  context.imageSmoothingEnabled = false;
+  context.fillStyle = bg;
+  context.fillRect(0,0,width,height);
+  context.drawImage(document.querySelector('div.sketch[data-sketch-id="' + id + '"] img'), 0, 0, 128, 72, 0, 0, width, height);
+  var myImage = canvas.toDataURL("image/png");
+  canvas.remove();
+  downloadURI("data:" + myImage, "doodle_" + id + ".png");
+}
+
 
 function attachDrawingToCanvas(canvas, replayButton) {
 
@@ -327,16 +353,16 @@ function postedDrawing() {
 
 
 function generateSketchElement(sketch, showReplyLink = true) {
-  let replies = "";
+  let replies = '<a href="javascript:void(0);" class="download" title="download" onclick="downloadSketch(' + sketch.id + ')"><i class="fas fa-download"></i></a>';
 
   if (showReplyLink)
     if (sketch.replies) {
-      replies = '<a href="javascript:void(0);" class="replies" onclick="viewReplies(' + sketch.id + ')">' + sketch.replies + (sketch.replies > 1 ? ' replies' : ' reply' ) +  '</a>';
+      replies += '<a href="javascript:void(0);" class="replies" onclick="viewReplies(' + sketch.id + ')">' + sketch.replies + (sketch.replies > 1 ? ' replies' : ' reply' ) +  '</a>';
     } else {
-      replies = '<a href="javascript:void(0);" class="replies" onclick="reply(' + sketch.id + ')">doodle a reply</a>';
+      replies += '<a href="javascript:void(0);" class="replies" onclick="reply(' + sketch.id + ')">doodle a reply</a>';
     }
 
-  return '<div class="sketch frame"><span class="time" data-time="' + sketch.timestamp + '">' + msToTime(currTime - sketch.timestamp) + ' ago</span><img src="' + sketch.dataUrl + '" onclick="watchReplay(' + sketch.id + ')"/>' + replies + '</div>';
+  return '<div class="sketch frame" data-sketch-id="' + sketch.id + '"><span class="time" data-time="' + sketch.timestamp + '">' + msToTime(currTime - sketch.timestamp) + ' ago</span><img src="' + sketch.dataUrl + '" onclick="watchReplay(' + sketch.id + ')"/>' + replies + '</div>';
 }
 
 
