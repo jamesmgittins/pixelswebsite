@@ -28,6 +28,18 @@ a:hover {
   text-decoration: underline;
   color: #FF7700;
 }
+
+.page-container {
+  display: grid;
+  grid-template-rows: 1;
+  grid-template-columns: 1;
+}
+
+.page-container .page {
+  grid-row: 1;
+  grid-column: 1;
+}
+
 .big-link {
   font-size: 1.5em;
   padding: 0.5em;
@@ -67,12 +79,11 @@ a:hover {
 
 .list {
   width:75%;
-  margin:auto;
+  margin:0 auto;
 }
 
 #create {
   padding:1em 0 2em 0;
-  margin:0 -1em;
   display:flex;
   justify-content: center;
   flex-direction: row;
@@ -243,9 +254,6 @@ div.canvas-container {
 @media screen and (max-width: 900px) {
   body {
     padding:1em 0;
-  }
-  #create {
-    margin:0;
   }
   .replay-container {
     width: 90vw; 

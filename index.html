@@ -1,86 +1,19 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="sketchdraw.css">
     <link rel="manifest" href="manifest.json">
     <meta name="description" content="Doodle with Others">
     <meta name="keywords" content="doodle,doodles,canvas,social">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <script src="js/lz-string.min.js"></script>
-    <script src="https://kit.fontawesome.com/ec1a7ad5db.js" crossorigin="anonymous"></script>
-    <script src="js/sketchdraw.js"></script>
     <title>Doodles</title>
-  </head>
-  <body>
-    <div class="top">
-      <h1>Doodles</h1>
-      <a href="javascript:void(0);" onclick="startDrawing()" id="doodle-button" class="big-link"><i class="fas fa-pen-square"></i> Create Doodle</a>
-      <a href="javascript:void(0);" onclick="backButton()" class="hidden big-link" id="back-button"><i class="fas fa-backward"></i> Back</a>
-      <a href="javascript:void(0);" onclick="reply(getReplyId())" class="hidden big-link" id="reply-button"><i class="fas fa-pen-square"></i> Reply</a>
-    </div>
-    <div id="list-panel" class="list">
-      <div class="nav-buttons">
-        <span class="big-link" id="recent-button">
-          <a href="javascript:void(0);" onclick="showRecent()"><i class="fas fa-bolt"></i> Recent Doodles</a>
-          <span><i class="fas fa-bolt"></i> Recent Doodles</span>
-        </span>
-        <span class="big-link" id="popular-button">
-          <a href="javascript:void(0);" onclick="showPopular()"><i class="fas fa-star"></i> Popular Doodles</a>
-          <span><i class="fas fa-star"></i> Popular Doodles</span>
-        </span>
-      </div>
-      <div id="recent" class="list-column"></div>
-      <div id="popular" class="list-column hidden"></div>
-      <div id="replies" class="list-column hidden"></div>
-    </div>
-    <div id="create" class="hidden">
-      <div class="toolbar">
-        <a id="replay-button" href="javascript:void(0);" title="Replay"><i class="far fa-play-circle"></i></a>
-        <a id="trash-button" href="javascript:void(0);" title="Trash"><i class="fas fa-trash"></i></a>
-      </div>
-      <div class="canvas-container">
-        <div class="frame">
-          <canvas id="sketch-canvas" width="128" height="72"></canvas>
-        </div>
-      </div>
-      <div class="toolbar">
-        <a id="post-button" href="javascript:void(0);" title="Post"><i class="fas fa-file-upload"></i></a>
-      </div>
-      <div class="clear"></div>
-    </div>
-    <div id="replay" class="hidden" onclick="hideReplay();">
-      <div class="replay-container">
-        <div class="frame">
-          <canvas id="replay-canvas" width="128" height="72"></canvas>
-        </div>
-      </div>
-      
-    </div>
-    <script>
-      getGuid();
-      let path = getQueryVariable('path');
-      if (path) {
-        switch (path) {
-          case 'recent':
-            showRecent();
-            break;
-          case 'replies':
-            viewReplies(getReplyId());
-            break;
-          case 'popular':
-            showPopular();
-            break;
-          case 'create':
-            startDrawing();
-            break;
-        }
-      } else {
-        showRecent();
-      }
-      setStateManager();
-      attachDrawingToCanvas(document.getElementById("sketch-canvas"), document.getElementById("replay-button"));
-    </script>
-  </body>
+	<link rel='stylesheet' href='build/bundle.css'>
+	<script src="js/lz-string.min.js"></script>
+    <script src="https://kit.fontawesome.com/ec1a7ad5db.js" crossorigin="anonymous"></script>
+	<script defer src='build/bundle.js'></script>
+</head>
+<body>
+</body>
 </html>
